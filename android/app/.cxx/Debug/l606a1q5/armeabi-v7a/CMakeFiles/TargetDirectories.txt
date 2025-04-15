@@ -1,0 +1,2 @@
+C:/zeinab/clinical/android/app/.cxx/Debug/l606a1q5/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/zeinab/clinical/android/app/.cxx/Debug/l606a1q5/armeabi-v7a/CMakeFiles/rebuild_cache.dir

@@ -1,3 +1,5 @@
+import 'package:appointment_repository/appointment_repository.dart';
+import 'package:clinical/appointment/blocs/get_all_appointments_bloc/get_all_appointments_bloc.dart';
 import 'package:clinical/auth/screens/welcome_screen.dart';
 import 'package:clinical/home/blocs/my_user_bloc/my_user_bloc.dart';
 import 'package:clinical/home/doctor_home_screen/screens/doctor_home_screen.dart';
@@ -49,6 +51,8 @@ class MyAppView extends StatelessWidget {
                       ..add(GetMyUser(state.myUser!.uid))),
                   BlocProvider<SignoutBloc>(
                     create: (context) => SignoutBloc(context.read<AuthenticationBloc>().userRepo)),
+                  BlocProvider<GetAllAppointmentsBloc>(
+                    create: (context) => GetAllAppointmentsBloc(FirebaseAppointmentRepo())..add(GetCurrentAppointment(doctorId: state.myUser!.uid))),
                 ], 
                 child: DoctorHomeScreen(doctor.uid));
             }else{

@@ -32,30 +32,34 @@ class _AddPrescriptionScreenState extends State<AddPrescriptionScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            MyTextfield(
-              controller: medicationsController, 
-              hintText: 'Medicals', 
-              prefixIcon: Icons.medication),
-            MyTextfield(
-              controller: instructionsController, 
-              hintText: 'Instructions', 
-              prefixIcon: Icons.arrow_circle_right),
-            TextButton(
-              style: TextButton.styleFrom(
-                  minimumSize: Size(MediaQuery.of(context).size.width * 0.5, 50),
-                  backgroundColor: Theme.of(context).colorScheme.onSurface),
-              onPressed: () {
-                setState(() {
-                  prescription.medications = medicationsController.text;
-                  prescription.instructions = instructionsController.text;
-                });
-                context.read<PrescriptionBloc>().add(AddPrescriptionEvent(prescription));
-              },
-              child: const Text('Add Prescription', style: TextStyle(fontSize: 25, color: Colors.white)),
-            )
-          ],
+        child: Center(
+          child: Column(
+            children: [
+              MyTextfield(
+                controller: medicationsController, 
+                hintText: 'Medicals', 
+                prefixIcon: Icons.medication),
+              const SizedBox(height: 8),
+              MyTextfield(
+                controller: instructionsController, 
+                hintText: 'Instructions', 
+                prefixIcon: Icons.arrow_circle_right),
+              const SizedBox(height: 20),
+              TextButton(
+                style: TextButton.styleFrom(
+                    minimumSize: Size(MediaQuery.of(context).size.width * 0.5, 50),
+                    backgroundColor: Theme.of(context).colorScheme.onSurface),
+                onPressed: () {
+                  setState(() {
+                    prescription.medications = medicationsController.text;
+                    prescription.instructions = instructionsController.text;
+                  });
+                  context.read<PrescriptionBloc>().add(AddPrescriptionEvent(prescription));
+                },
+                child: const Text('Add Prescription', style: TextStyle(fontSize: 25, color: Colors.white)),
+              )
+            ],
+          ),
         ),
       ),
     );

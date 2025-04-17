@@ -40,21 +40,24 @@ final class GetAppointmentByIdLoaded extends GetAllAppointmentsState {
 
 final class GetAppointmentForDayLoaded extends GetAllAppointmentsState {
   final Stream<List<Appointment>>? appointments;
+  final DateTime day;
 
-  const GetAppointmentForDayLoaded(this.appointments);
+  const GetAppointmentForDayLoaded(this.appointments, {required this.day});
 
   @override
-  List<Object> get props => [appointments!];
+  List<Object> get props => [appointments!, day];
 }
 
 final class GetCurrentAppointmentLoaded extends GetAllAppointmentsState {
-  final Appointment? appointment;
+  final Stream<Appointment>? appointment;
 
   const GetCurrentAppointmentLoaded(this.appointment);
 
   @override
   List<Object> get props => [appointment!];
 }
+
+final class GetCurrentAppointmentEmpty extends GetAllAppointmentsState {}
 
 final class GetAllAppointmentsError extends GetAllAppointmentsState {
   final String error;

@@ -86,14 +86,16 @@ class FirebaseAppointmentRepo extends AppointmentRepo{
   @override
   Stream<List<Appointment>> getAppointmentsForDay(DateTime day, String doctorId) {
     try{
-      DateTime startOfDay = DateTime(day.year, day.month, day.day, 0, 0);
-      DateTime endOfDay = DateTime(day.year, day.month, day.day, 23, 59, 59);
+      // DateTime startOfDay = DateTime(day.year, day.month, day.day, 0, 0);
+      // DateTime endOfDay = DateTime(day.year, day.month, day.day, 23, 59, 59);
+      DateTime startOfDay = DateTime(day.year, day.month, day.day);
+      DateTime endOfDay = DateTime(day.year, day.month, day.day + 1);
 
       return appointmentsCollection
           .where('doctorId', isEqualTo: doctorId)
-          .where('date', isGreaterThanOrEqualTo: startOfDay)
-          .where('date', isLessThanOrEqualTo: endOfDay)
-          .orderBy('dateTime')
+          .where('dateTime', isGreaterThanOrEqualTo: startOfDay)
+          .where('dateTime', isLessThan: endOfDay)
+          .orderBy('dateTime', descending: true)
           .snapshots()
           .map((snapshot) => snapshot.docs.map((doc) => Appointment.fromMap(doc.data())).toList());
     }catch(e){
@@ -103,22 +105,20 @@ class FirebaseAppointmentRepo extends AppointmentRepo{
   }
   
   @override
-  Future<Appointment> getCurrentAppointment(String doctorId) async {
+  Stream<Appointment> getCurrentAppointment(String doctorId) {
     try{
       final now = Timestamp.fromDate(DateTime.now());
 
-      final querySnapshot = await appointmentsCollection
-          .where('doctorId', isEqualTo: doctorId)
+      final querySnapshot = appointmentsCollection.where('doctorId', isEqualTo: doctorId);
+
+      return querySnapshot
           .where('dateTime', isGreaterThanOrEqualTo: now)
           .orderBy('dateTime')
           .limit(1)
-          .get();
-        
-      if(querySnapshot.docs.isNotEmpty){
-        return Appointment.fromMap(querySnapshot.docs.first.data());
-      }else{
-        return Appointment.empty;
-      }
+          .snapshots()
+          .map((snapshot) => snapshot.docs.isEmpty
+            ? Appointment.empty
+            : Appointment.fromMap(snapshot.docs.first.data()));
     }catch(e){
       print('Error displaying current appointment');
       rethrow;

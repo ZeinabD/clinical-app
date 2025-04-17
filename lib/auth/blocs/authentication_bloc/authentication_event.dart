@@ -10,7 +10,4 @@ sealed class AuthenticationEvent extends Equatable {
 class AuthenticationUserChaged extends AuthenticationEvent{
   final MyUser? myUser;
   const AuthenticationUserChaged(this.myUser);
-
-  // @override
-  // List<Object> get props => [myUser!];
 }

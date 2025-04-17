@@ -41,11 +41,12 @@ class GetAllAppointmentsBloc extends Bloc<GetAllAppointmentsEvent, GetAllAppoint
     });
 
     on<GetAppointmentsForDay>((event, emit) async{
-      emit(GetAllAppointmentsLoading());
+      if(state is! GetAppointmentForDayLoaded || (state as GetAppointmentForDayLoaded).day != event.day){
+        emit(GetAllAppointmentsLoading());
+      }
       try{
         final Stream<List<Appointment>> appointments = appointmentRepo.getAppointmentsForDay(event.day, event.doctorId);
-        print('${appointments.length.toString()},,,,,,');
-        emit(GetAppointmentForDayLoaded(appointments));
+        emit(GetAppointmentForDayLoaded(appointments, day: event.day));
       }catch(e){
         emit(const GetAllAppointmentsError('Failed Fetch Appointments'));
       }
@@ -54,8 +55,12 @@ class GetAllAppointmentsBloc extends Bloc<GetAllAppointmentsEvent, GetAllAppoint
     on<GetCurrentAppointment>((event, emit) async{
       emit(GetAllAppointmentsLoading());
       try{
-        final Appointment appointment = await appointmentRepo.getCurrentAppointment(event.doctorId);
-        emit(GetCurrentAppointmentLoaded(appointment));
+        final Stream<Appointment> appointment = appointmentRepo.getCurrentAppointment(event.doctorId);
+        if(appointment == Appointment.empty){
+          emit(GetCurrentAppointmentEmpty());
+        }else{
+          emit(GetCurrentAppointmentLoaded(appointment));
+        }
       }catch(e){
         emit(const GetAllAppointmentsError('Failed Fetch Appointments'));
       }

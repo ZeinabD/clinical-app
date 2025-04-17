@@ -11,10 +11,10 @@ Future<void> main() async {
   Platform.isAndroid
       ? await Firebase.initializeApp(
           options: const FirebaseOptions(
-            apiKey: "AIzaSyD3gjMG9UjGE03m8RfIfA-y4BJHucoB8Ac",
-            appId: "1:641114884597:android:43ec6b9ff4cda29ce778bc",
-            messagingSenderId: "641114884597",
-            projectId: "clinical-app-2ae62",
+            apiKey: "AIzaSyCT7tNgtARcv--0hxIrLMAPwK64hb6bZWc",
+            appId: "1:270140547194:android:7c1d41e6b58b0a82b6dbc3",
+            messagingSenderId: "270140547194",
+            projectId: "clinical-app-131c5",
           ),
         )
       : await Firebase.initializeApp();

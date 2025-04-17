@@ -1,7 +1,6 @@
 import 'package:clinical/models/appointment.dart';
 
 abstract class AppointmentRepo {
-  //appointment methods
   Future<void> addAppointment(Appointment newAppointment);
 
   Future<void> deleteAppointment(String appointmentId);
@@ -16,5 +15,5 @@ abstract class AppointmentRepo {
 
   Stream<Appointment> getAppointmentById(String appointmentId);
 
-  Future<Appointment> getCurrentAppointment(String doctorId);
+  Stream<Appointment> getCurrentAppointment(String doctorId);
 }

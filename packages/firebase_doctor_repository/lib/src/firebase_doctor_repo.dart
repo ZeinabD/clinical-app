@@ -28,7 +28,7 @@ class FirebaseDoctorRepo extends DoctorRepo{
           .get()
           .then((doc) => doc.docs.map((doctor) => Doctor.fromMap(doctor.data())).toList());
     }catch(e){
-      log(e.toString() as num);
+      print(e);
       return [];
     }
   }

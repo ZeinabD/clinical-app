@@ -1,10 +1,11 @@
 import 'package:clinical/appointment/blocs/get_all_appointments_bloc/get_all_appointments_bloc.dart';
 import 'package:clinical/models/appointment.dart';
+import 'package:clinical/models/patient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:patient_repository/patient_repository.dart';
 import 'package:table_calendar/table_calendar.dart';
-import '../../../appointment/screens/secretary_appointment_screens/appointment_screen.dart';
 
 class Calendar extends StatefulWidget {
   final String doctorId;
@@ -16,13 +17,7 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> {
-  late DateTime _selectedDay;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedDay = DateTime.now();
-  }
+  late DateTime _selectedDay = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -46,13 +41,17 @@ class _CalendarState extends State<Calendar> {
   }
 
   void _showAppointmentsDialog(BuildContext context, DateTime selectedDay){
-    final getAllAppointmentsBloc = context.read<GetAllAppointmentsBloc>();
+    final bloc = context.read<GetAllAppointmentsBloc>();
+
+    if (bloc.state is! GetAppointmentForDayLoaded || (bloc.state as GetAppointmentForDayLoaded).day != selectedDay) {
+      bloc.add(GetAppointmentsForDay(day: selectedDay, doctorId: widget.doctorId));
+    }
 
     showDialog(
       context: context, 
       builder: (dialogContext){
         return BlocProvider.value(
-          value: getAllAppointmentsBloc,
+          value: bloc,
           child: AlertDialog(
             title: Text(DateFormat('dd/MM/yyyy').format(selectedDay)),
             content: Container(
@@ -73,7 +72,7 @@ class _CalendarState extends State<Calendar> {
                           return const Center(child: CircularProgressIndicator());
                         }
                         if(snapshot.hasError){
-                          return const Center(child: Text('Error', style: TextStyle(fontSize: 30)));
+                          return const Center(child: Text('Stream Error', style: TextStyle(fontSize: 30)));
                         }
                         final appointments = snapshot.data ?? [];
                         
@@ -86,18 +85,36 @@ class _CalendarState extends State<Calendar> {
                           itemBuilder: (dialogContext, int i){
                             final appointment = appointments[i];
                             final String time = DateFormat("hh:mm a").format(appointment.dateTime);
-                            // final patient = FirebasePatientRepo().getPatientById(appointment.patientId);
-                            return ListTile(
-                              leading: Icon(Icons.local_hospital),
-                              title: Text('patient.name)'),
-                              subtitle: Text(time),
-                              onTap: (){
-                                Navigator.push(
-                                  dialogContext,
-                                  MaterialPageRoute<void>(
-                                    builder: (context) => AppointmentScreen(appointment),
-                                  ));
-                              },
+                            return FutureBuilder<Patient>(
+                              future: FirebasePatientRepo().getPatientById(appointment.patientId),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return ListTile(
+                                    leading: const Icon(Icons.local_hospital),
+                                    title: const Text('Loading...'),
+                                    subtitle: Text(time),
+                                  );
+                                }else if(snapshot.hasError) {
+                                  return ListTile(
+                                    leading: const Icon(Icons.error),
+                                    title: const Text('Error loading patient'),
+                                    subtitle: Text(time),
+                                  );
+                                } else {
+                                  return ListTile(
+                                    leading: const Icon(Icons.local_hospital),
+                                    title: Text(snapshot.data!.name),
+                                    subtitle: Text(time),
+                                    onTap: (){
+                                      // Navigator.push(
+                                      //   dialogContext,
+                                      //   MaterialPageRoute<void>(
+                                      //     builder: (context) => AppointmentScreen(appointment),
+                                      //   ));
+                                    },
+                                  );
+                                }
+                              }
                             );
                           });
                       }

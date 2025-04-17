@@ -19,9 +19,26 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return FutureBuilder<Patient>(
       future: FirebasePatientRepo().getPatientById(widget.patientId),
       builder: (context, patientSnapshot) {
+         if (patientSnapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }else if (patientSnapshot.hasError) {
+          return Scaffold(
+            appBar: AppBar(),
+            body: const Center(child: Text('Error loading patient')),
+          );
+        }else if (!patientSnapshot.hasData) {
+          return Scaffold(
+            appBar: AppBar(),
+            body: const Center(child: Text('Patient not found')),
+          );
+        }
+        
+        final patient = patientSnapshot.data!;
         return Scaffold(
           appBar: AppBar(
-            title: Text('${patientSnapshot.data!.name} History'),
+            title: Text('${patient.name} History'),
           ),
           body: BlocBuilder<GetAllAppointmentsBloc, GetAllAppointmentsState>(
             builder: (context, state) {
@@ -36,7 +53,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     }else if(appointmentSnapshot.hasData){
                       final appointments = appointmentSnapshot.data ?? [];
                       if(appointments.isEmpty){
-                        return Text('${patientSnapshot.data!.name} has no appointments tell today');
+                        return Text('${patient.name} has no appointments tell today');
                       }
 
                       return Padding(

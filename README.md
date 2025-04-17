@@ -1,16 +1,29 @@
 # clinical
+A Flutter-based clinical app that supports two roles: secretary and doctor. It allows patient and appointment management, prescription tracking, and real-time appointment viewing using Firebase as the backend.
 
-A new Flutter project.
+Features
+👩‍💼 Secretary
 
-## Getting Started
+    Add, edit, delete patients
 
-This project is a starting point for a Flutter application.
+    Add, edit, delete appointments
 
-A few resources to get you started if this is your first Flutter project:
+🧑‍⚕️ Doctor
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+    Add prescriptions to each appointment
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+    View patient history
+
+    See the current appointment in real-time
+
+🧱 Tech Stack
+
+    Flutter – UI and frontend logic
+
+    BLoC Pattern – State management
+
+    Firebase
+
+        Authentication – User sign-in
+
+        Cloud Firestore – doctors, secretaries, patients, appointments, prescriptions

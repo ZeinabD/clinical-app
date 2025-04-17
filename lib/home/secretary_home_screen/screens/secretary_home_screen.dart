@@ -72,7 +72,9 @@ class _SecretaryHomeScreenState extends State<SecretaryHomeScreen> {
                   child: Text(doctor.name, style: const TextStyle(fontSize: 20)));
               }).toList(),
               onChanged: (Doctor? newValue) {
-                _selectedDoctor = newValue!;
+                setState(() {
+                  _selectedDoctor = newValue!;
+                });
               }),
             IconButton(
               onPressed: () {

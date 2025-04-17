@@ -145,7 +145,7 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                     onTap: () async {
                       DateTime? newDate = await showDatePicker(
                         context: context,
-                        firstDate: DateTime.now(),
+                        firstDate: DateTime(1900),
                         lastDate: DateTime.now().add(const Duration(days: 365))
                       );
                       if(newDate != null){
